@@ -8,3 +8,5 @@ Clean the Data:
 	- Correlation
 	- normalisation
 	- feature ingineering (1+x^2)
+	
+Newton method: find gamma using the Armijo rule
