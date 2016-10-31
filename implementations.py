@@ -404,104 +404,70 @@ def newton_logistic_regression(y, tx, max_iter, gamma, initial_w):
 ########################################################
 
 
-def polynomial_regression():
+def polynomial_regression(x_tr, y_tr, x_te, y_te, degrees):
     """For each degree, constructs the polynomial basis function expansion of the data
        and stores the corresponding RMSE in an array. At the end we chose the degree that
        generated the smallest RMSE. Of course we cannot test all degrees so this is not
        optimal but it helps us having a good idea of the optimal degree value."""
-    # define parameters
-    degrees = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     
     # for each degree we store the corresponding RMSE in this array
-    rmse_array = np.array([])
+    fittings = np.empty(len(degrees))
 
     for ind, degree in enumerate(degrees):
+        print("computing fitting for degree",degree,"...")
         # form the data to do polynomial regression:
-        polynomial_basis = build_poly(tX, degree)
+        poly_basis_tr = build_poly(x_tr, degree)
+        poly_basis_te = build_poly(x_te, degree)
         
-        # least square and calculate rmse:
-        weight, mse = least_squares(y, polynomial_basis)
-        rmse = np.sqrt(2*mse)
-        rmse_array = np.append(rmse_array, rmse)
-        print("RMSE for degree", degree, ":", rmse)
+        w, loss = least_squares(y_tr, poly_basis_tr)
+        fitting = error(y_te,predict_labels(w,poly_basis_te))
+        fittings[ind] = fitting
+    plt.xlabel("degree")
+    plt.ylabel("fitting")
+    plt.plot(degrees, fittings, marker="o")
+    plt.grid(True)
+    print("best fitting with degree",degrees[np.argmax(fittings)],":",max(fittings))
     
-    # plot the RMSE in function of the degree
-    plt.plot(degrees, rmse_array)
-    plt.xlabel('degree')
-    plt.ylabel('RMSE')
-    
-    #compute the best degree
-    best_degree = degrees[np.argmin(rmse_array)]
-    print("The best degree among those we tested is", best_degree, ".")
+
     
     
-def ridge_regression_demo(x, y, ratio, seed):
+def ridge_regression_demo(tX, y, ratio, seed, lambdas, degrees):
     """Calculate polyomial basis tX from x with given degree,
     splits the data according to given ratio and then run
     ridge regression on tX, y with different lambda values.
     At the end we plot the RMSEs of training/testing set in
     function of lambda in order to determine the best lambda value"""
-    # define parameter
-    lambdas = np.logspace(-5, 0, 15)
-    degrees = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     
-    # split the data, and return train and test data:
-    x_tr, y_tr, x_te, y_te = split_data(x, y, ratio, seed)
+    # split the data
+    x_tr, y_tr, x_te, y_te = split_data(tX, y, ratio, seed)
     
-    #calculate test/train RMSE for each lambda and store them in lists
-    rmse_list_tr = np.empty([len(degrees), len(lambdas)])
-    rmse_list_te = np.empty([len(degrees), len(lambdas)])
-    errors = np.empty([len(degrees), len(lambdas)])
-    optimal_weights_err = np.empty([np.shape(tX)[1]])
-    optimal_weights_rmse_te = np.empty([np.shape(tX)[1]])
-    best_err = 0
-    best_RMSE = 10e10
+    # initialize fitting rate array
+    fittings = np.empty([len(degrees), len(lambdas)])
+    best_fitting = 0
+    best_lambda = 0
+    best_degree = 0
     for i, degree in enumerate(degrees):
-        # for each lambda, store the best RMSE and the degree that generated it
         for j, lambd in enumerate(lambdas):
             # compute polynomial basis from given degree
             poly_basis_tr = build_poly(x_tr, degree)
             poly_basis_te = build_poly(x_te, degree)
-            # compute training and testing (R)MSE for current lambda/degree
+            # compute fitting rate for current (lambda,degree) combination
             w_tr, mse_tr = ridge_regression(y_tr, poly_basis_tr,lambd)
-            mse_te = compute_loss(y_te, poly_basis_te, w_tr)
-            rmse_tr = np.sqrt(2*mse_tr)
-            rmse_te = np.sqrt(2*mse_te)
-            err = error(y_te,predict_labels(w_tr,poly_basis_te))
-            #print("Training RMSE for lambda =", lambd, "and degree", degree, ":", rmse_tr, "\n")
-            #print("Testing RMSE for lambda =", lambd, "and degree", degree, ":", rmse_te, "\n")
-            #print("error for lambda = ", lambd, "and degree", degree, ":", err)
-            # Store RMSEs in arrays
-            rmse_list_tr[i][j] = rmse_tr
-            rmse_list_te[i][j] = rmse_te
-            errors[i][j] = err
-            # we do this to get optimal weights according to the error
-            if(best_err < err):
-                best_err = err
-                optimal_weights_err = w_tr
-            # get the optimal weights according to the testing rmse
-            if(best_RMSE > rmse_te):
-                best_RMSE = rmse_te
-                optimal_weights_rmse_te = w_tr
+            fitting = error(y_te,predict_labels(w_tr,poly_basis_te))
+            fittings[i][j] = fitting
+            # keep track of best fitting and (lambd, degree) that generated it
+            if(best_fitting < fitting):
+                best_fitting = fitting
+                best_lambda = lambd
+                best_degree = degree
+            print("fitting for degree",degree,"and lambda",lambd,":",fitting)
         # plot figures
         plt.figure(i)
-        plot_train_test(rmse_list_tr[i, :], rmse_list_te[i, :], lambdas, degree)
-        # TODO we need to compute the error for each (d, lambda) value, store all in array and print best for each degree
-        #err = error(y_te,predict_labels(w_tr,poly_basis_te))
-        plt.title(("RR degree", degree, ".Best Error: ", best_err))
-    
-    # get best degree, lambda according to the testing RMSE
-    degree_index_te, lambd_index_te = np.where(rmse_list_te == rmse_list_te.min())
-    degree_index_te, lambd_index_te = (degree_index_te[0],lambd_index_te[0])
-    best_rmse_te = rmse_list_te[degree_index_te][lambd_index_te]
-    print("Best testing RMSE is", best_rmse_te, "with degree", degrees[degree_index_te], "and lambda=", lambdas[lambd_index_te], "\n")
-    # get best degree and lambda according to the error
-    degree_index_err, lambd_index_err = np.where(errors == errors.max())
-    degree_index_err, lambd_index_err = (degree_index_err[0],lambd_index_err[0])
-    best_error = errors[degree_index_err][lambd_index_err]
-    print("Best fitting is", best_error, "% with degree", degrees[degree_index_err], "and lambda=", lambdas[lambd_index_err], "\n")
-    #return optimal_weights, best_RMSE
-    return optimal_weights_rmse_te, best_rmse_te
+        plt.xlabel("lambdas")
+        plt.ylabel("fitting")
+        plt.semilogx(lambdas, fittings[i,:], marker="o")
+        plt.grid(True)
+    print("max fitting for lambda =",best_lambda,"degree=",best_degree,"->",best_fitting)
 
 
     
