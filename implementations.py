@@ -465,13 +465,17 @@ def ridge_regression_demo(tX, y, ratio, seed, lambdas, degrees):
         plt.figure(i)
         plt.xlabel("lambdas")
         plt.ylabel("fitting")
-        plt.semilogx(lambdas, fittings[i,:], marker="o")
+        plt.semilogx(lambdas, fittings[i,:], marker=".")
         plt.grid(True)
     print("max fitting for lambda =",best_lambda,"degree=",best_degree,"->",best_fitting)
 
 
     
 def cross_validation_demo(x, y, k_fold, degrees, lambdas, method_to_use):
+    """This is a demo computing the cross-validation error for all combinations
+    of the elements of the lambdas and degrees arrays, plots some graphs with the
+    data fitting and output the values generating the best fitting. Note that the
+    function only works for ridge_regression method."""
     seed = 1
     # split data in k fold
     k_indices = build_k_indices(y, k_fold, seed)
