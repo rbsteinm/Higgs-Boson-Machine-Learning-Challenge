@@ -147,8 +147,8 @@ def cross_validation(y, x, k_indices, k, lambda_, degree, method_to_use):
     poly_basis_tr = build_poly(x_tr, degree)
     poly_basis_te = build_poly(x_te, degree)
 
-    # ridge regression
-    w_tr, mse_tr = method_to_use(y_tr, poly_basis_tr,lambda_)
+    # compute weights, MSE and fitting percentage with given method (eg ridge regression)
+    w_tr, mse_tr = method_to_use(y_tr, poly_basis_tr, *rest_of_params)
     y_est = predict_labels(w_tr,poly_basis_te)
     fitting = error(y_te, y_est)
     
@@ -375,10 +375,10 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iter, gamma):
     print("The loss={l}".format(l=calculate_loss(y, tx, w)))
     return w, loss
     
-def newton_logistic_regression(y, tx, max_iter, gamma):
+def newton_logistic_regression(y, tx, max_iter, gamma, initial_w):
     threshold = 1e-10
     losses = np.array([0,1])
-    w = np.zeros(tx.shape[1])
+    w = initial_w
     
     # start the logistic regression
     for iter in range(max_iter):
