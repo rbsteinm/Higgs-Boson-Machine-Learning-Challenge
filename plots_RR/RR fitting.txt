@@ -1,0 +1,62 @@
+degrees = [1,2,3,4,5,6,7,8]
+k_fold = 4
+#lambdas = np.logspace(-12, -9, 6)
+lambdas = np.logspace(-8, -2, 7)
+
+fitting for degree 1 and lambda 1e-08 : 77.3988
+fitting for degree 1 and lambda 1e-07 : 77.3988
+fitting for degree 1 and lambda 1e-06 : 77.39840000000001
+fitting for degree 1 and lambda 1e-05 : 77.39840000000001
+fitting for degree 1 and lambda 0.0001 : 77.3972
+fitting for degree 1 and lambda 0.001 : 77.3932
+fitting for degree 1 and lambda 0.01 : 77.3724
+fitting for degree 2 and lambda 1e-08 : 79.54119999999999
+fitting for degree 2 and lambda 1e-07 : 79.54079999999999
+fitting for degree 2 and lambda 1e-06 : 79.54079999999999
+fitting for degree 2 and lambda 1e-05 : 79.542
+fitting for degree 2 and lambda 0.0001 : 79.546
+fitting for degree 2 and lambda 0.001 : 79.546
+fitting for degree 2 and lambda 0.01 : 79.5124
+fitting for degree 3 and lambda 1e-08 : 81.0976
+fitting for degree 3 and lambda 1e-07 : 81.0976
+fitting for degree 3 and lambda 1e-06 : 81.0976
+fitting for degree 3 and lambda 1e-05 : 81.0976
+fitting for degree 3 and lambda 0.0001 : 81.09880000000001
+fitting for degree 3 and lambda 0.001 : 81.1024
+fitting for degree 3 and lambda 0.01 : 81.0344
+fitting for degree 4 and lambda 1e-08 : 81.1876
+fitting for degree 4 and lambda 1e-07 : 81.18679999999999
+fitting for degree 4 and lambda 1e-06 : 81.18599999999999
+fitting for degree 4 and lambda 1e-05 : 81.1876
+fitting for degree 4 and lambda 0.0001 : 81.1868
+fitting for degree 4 and lambda 0.001 : 81.196
+fitting for degree 4 and lambda 0.01 : 81.1608
+fitting for degree 5 and lambda 1e-08 : 81.3176
+fitting for degree 5 and lambda 1e-07 : 81.3176
+fitting for degree 5 and lambda 1e-06 : 81.316
+fitting for degree 5 and lambda 1e-05 : 81.3164
+fitting for degree 5 and lambda 0.0001 : 81.3156
+fitting for degree 5 and lambda 0.001 : 81.3208
+fitting for degree 5 and lambda 0.01 : 81.2504
+fitting for degree 6 and lambda 1e-08 : 81.40639999999999
+fitting for degree 6 and lambda 1e-07 : 81.40639999999999
+fitting for degree 6 and lambda 1e-06 : 81.4048
+fitting for degree 6 and lambda 1e-05 : 81.4012
+fitting for degree 6 and lambda 0.0001 : 81.4036
+fitting for degree 6 and lambda 0.001 : 81.3808
+fitting for degree 6 and lambda 0.01 : 81.28800000000001
+fitting for degree 7 and lambda 1e-08 : 81.4332
+fitting for degree 7 and lambda 1e-07 : 81.43279999999999
+fitting for degree 7 and lambda 1e-06 : 81.43199999999999
+fitting for degree 7 and lambda 1e-05 : 81.4272
+fitting for degree 7 and lambda 0.0001 : 81.4316
+fitting for degree 7 and lambda 0.001 : 81.42479999999999
+fitting for degree 7 and lambda 0.01 : 81.3068
+fitting for degree 8 and lambda 1e-08 : 81.4312
+fitting for degree 8 and lambda 1e-07 : 81.4312
+fitting for degree 8 and lambda 1e-06 : 81.426
+fitting for degree 8 and lambda 1e-05 : 81.416
+fitting for degree 8 and lambda 0.0001 : 81.43119999999999
+fitting for degree 8 and lambda 0.001 : 81.4228
+fitting for degree 8 and lambda 0.01 : 81.29599999999999
+max fitting for lambda = 1e-08 degree= 7 -> 81.4332

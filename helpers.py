@@ -64,13 +64,12 @@ def plot_train_test(train_errors, test_errors, lambdas, degree):
     leg.draw_frame(False)
     plt.savefig("ridge_regression")
     
-def cross_validation_visualization(lambds, mse_tr, mse_te):
+def cross_validation_visualization(lambds, mse_tr, degree):
     """visualization the curves of mse_tr and mse_te."""
-    plt.semilogx(lambds, mse_tr, marker=".", color='b', label='train error')
-    plt.semilogx(lambds, mse_te, marker=".", color='r', label='test error')
+    plt.semilogx(lambds, mse_tr, marker=".", color='b', label='fit')
+    #plt.semilogx(lambds, mse_te, marker=".", color='r', label='test error')
     plt.xlabel("lambda")
-    plt.ylabel("rmse")
-    plt.title("cross validation")
+    plt.ylabel("fitting")
+    plt.title(("cross validation degree "+str(degree)))
     plt.legend(loc=2)
     plt.grid(True)
-    plt.savefig("cross_validation")

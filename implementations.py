@@ -123,7 +123,10 @@ def build_k_indices(y, k_fold, seed):
     return np.array(k_indices)
 
 def cross_validation(y, x, k_indices, k, lambda_, degree, method_to_use):
-    """return the loss of ridge regression."""
+    """Performs one round of cross-validation. For this round, the kth subset
+    is the testing set, all the other ones together form the training set.This 
+    method is called by the upper-layer cross validation method (cross_validation_error
+    for example) each time with a different k and then a mean is calculated."""
     # get k'th subgroup in test, others in train
     x_tr = np.empty([0,31])
     x_te = np.empty([0,31])
@@ -170,7 +173,6 @@ def cross_validation_error(x, y, degree, lambda_, method_to_use, k_fold):
         _,_,fitting = cross_validation(y, x, k_indices, k, lambda_, degree, method_to_use)
         fitting_mean += fitting
         k+=1
-        print("fitting:",fitting)
     fitting_mean /= k_fold
     return fitting_mean
 
@@ -503,31 +505,29 @@ def ridge_regression_demo(x, y, ratio, seed):
 
 
     
-def cross_validation_demo(x, y):
+def cross_validation_demo(x, y, k_fold, degrees, lambdas, method_to_use):
     seed = 1
-    degrees = [5]
-    k_fold = 4
-    lambdas = np.logspace(-12, -9, 6)
     # split data in k fold
     k_indices = build_k_indices(y, k_fold, seed)
     # define lists to store the loss of training data and test data
+    fittings = np.empty([len(degrees), len(lambdas)])
+    best_fitting = 0
+    best_lambda = 0
+    best_degree = 0
     for i, degree in enumerate(degrees):
-        rmse_tr = []
-        rmse_te = []
-        for lambda_ in lambdas:
-            loss_tr_sum,loss_te_sum = 0, 0
-            k = 0
-            for k in range(k_fold):
+        for j,lambda_ in enumerate(lambdas):
                 # we specify the name of the method we want to use with cross-validation
-                loss_tr, loss_te,_ = cross_validation(y, x, k_indices, k, lambda_, degree, ridge_regression)
-                loss_tr_sum += loss_tr
-                loss_te_sum += loss_te
-                k+=1
-            print("RMSE for lambda =",lambda_,":",loss_te_sum)
-            rmse_tr.append(loss_tr_sum)
-            rmse_te.append(loss_te_sum)
+                fitting = cross_validation_error(x, y, degree, lambda_, method_to_use, k_fold)
+                fittings[i,j] = fitting
+                if(fitting > best_fitting):
+                    best_fitting = fitting
+                    best_degree = degree
+                    best_lambda = lambda_
+                print("fitting for degree",degree,"and lambda",lambda_,":",fitting)
         plt.figure(i)
-        cross_validation_visualization(lambdas, rmse_tr, rmse_te)
-        plt.title(("cross validation degree",degree,"best RMSE_te:",min(rmse_te)))
+        cross_validation_visualization(lambdas, fittings[i,:],degree)
+        plt.title(("cross validation degree",degree))
+    print("max fitting for lambda =",best_lambda,"degree=",best_degree,"->",best_fitting)
+
 
 
