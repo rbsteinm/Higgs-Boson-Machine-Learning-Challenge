@@ -148,7 +148,7 @@ def cross_validation(y, x, k_indices, k, lambda_, degree, method_to_use):
     poly_basis_te = build_poly(x_te, degree)
 
     # compute weights, MSE and fitting percentage with given method (eg ridge regression)
-    w_tr, mse_tr = method_to_use(y_tr, poly_basis_tr, *rest_of_params)
+    w_tr, mse_tr = method_to_use(y_tr, poly_basis_tr, lambda_)
     y_est = predict_labels(w_tr,poly_basis_te)
     fitting = error(y_te, y_est)
     
@@ -325,7 +325,7 @@ def least_squares(y, tx):
     #computes the loss using MSE
     mse = compute_loss(y, tx, opt_w)
     return opt_w, mse
-    
+
 def ridge_regression(y, tx, lambda_):
     """implement ridge regression. This calculates the MSE while taking in 
     accout a regularizer that is determined by lambda. This has for effect to
@@ -336,7 +336,7 @@ def ridge_regression(y, tx, lambda_):
     return opt_w, mse
 
 def logistic_regression(y, tx, initial_w, max_iter, gamma):
-    threshold = 1e-20
+    threshold = 1e-10
     losses = np.array([0,1])
     w = initial_w
     
